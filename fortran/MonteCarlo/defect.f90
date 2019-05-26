@@ -3,10 +3,10 @@ implicit none
 
 character(100) :: buffer
 integer :: N = 200, endT=1001
-real(8) :: beta,mu
+real(8) :: beta,mu,measuredT,zeroE
 integer, dimension(100) :: tPoints
 integer, allocatable, dimension(:) :: logTPoints
-real(8), allocatable, dimension(:,:) :: grid,dgrid
+real(8), allocatable, dimension(:,:) :: grid,dgrid,oldGrid
 real(8) :: x,g,windingN
 real(8),parameter :: PI = 4*atan(1.0_8)
 character(12) :: fileNames
@@ -36,11 +36,12 @@ do t=1,100
     tPoints(t) =  INT(10**(t*dT))
 enddo
 logTPoints= tPoints(unique(tPoints))
-write(*,*) logTPoints
-
+!write(*,*) logTPoints
+!calculate zero temperature energy
+zeroE = -g*4.0
 
 !Initial Random Grid
-write(*,*) 'initialize grid'
+!write(*,*) 'initialize grid'
 allocate(grid(N,N))
 !write(*,*) grid(N,N)
 call random_seed()
@@ -51,26 +52,32 @@ do i=1,N
         grid(i,j) = x*2*PI
     end do
 enddo
-
+!open temperature V time file
+open(61,file='tVT.dat',status = 'unknown', position='append')
 !initialize defect grid
 allocate(dgrid(N,N))
 dgrid=0
-write(*,*) 'metropolis algo. commence'
+!write(*,*) 'metropolis algo. commence'
 !Preform the metropolis algorithm with XY hamiltonian
 do t=1,endT
     !write(*,*) 'time', t
     call metro(grid,beta,N)
+    
     write(fileNames,'(A3,I0.3,A4)') 'out', t,'.dat'
     write(dfileNames,'(A6,I0.3,A4)') 'defect', t,'.dat'
         !
     if (logSpace(t) .eq. 1) then
-        print *, trim(fileNames)
+        !print *, trim(fileNames)
 
         open(1,file=fileNames)
         open(3,file=dfileNames)
+        ! calculate defects and average energy, and write grid to file
+        measuredT = 0.
+
         do i=1,N
             do j=1,N
             write(1,'(F10.5)',advance="no") grid(i,j)
+            measuredT = (hamXY(i,j,grid(i,j),g,mu))/N/N+measuredT
             windingN=(angleDist(grid(modulo(i-2,N)+1,j),grid(i,j)))+&
                 &(angleDist(grid(modulo(i-2,N)+1,modulo(j-2,N)+1),grid(modulo(i-2,N)+1,j)))+&
                 &(angleDist(grid(i,modulo(j-2,N)+1),grid(modulo(i-2,N)+1,modulo(j-2,N)+1)))+&
@@ -87,11 +94,16 @@ do t=1,endT
             write(1,*)
             write(3,*)
         enddo
+        measuredT = (measuredT-zeroE)
+        write(61,'(I10,A, F10.5)') t,',', measuredT
+        write(*,*) t,' ', measuredT
+
+
         close(1)
         close(3)
     endif
 end do
-!Write to File
+close(61)
 
 deallocate(grid)
 contains

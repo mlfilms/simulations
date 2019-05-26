@@ -1,5 +1,6 @@
 #!/bin/bash
-
+cp * dataFolder/
+cd dataFolder
 gfortran -O3 -o defect.o defect.f90
 gfortran -O3 -o defectT.o aveDefect.f90
 
@@ -18,30 +19,35 @@ do
     beta=`echo $params| awk '{print $2}'`
     mu=`echo $params| awk '{print $3}'`
     N=`echo $params| awk '{print $4}'`
-    mkdir ./g-"$g"
-    cd ./g-"$g"
-    mkdir ./beta-"$beta"
-    cd beta-"$beta"
-    mkdir ./mu-"$mu"
-    cd ./mu-"$mu"
+   # mkdir ./g-"$g"
+   # cd ./g-"$g"
+   # mkdir ./beta-"$beta"
+   # cd beta-"$beta"
+   # mkdir ./mu-"$mu"
+   # cd ./mu-"$mu"
     echo $params > param.txt
-    mkdir data 
-    cd data
+    dName=`echo "./data-g-$g-beta-$beta-mu-$mu"` 
+    mkdir $dName
+    #mkdir ./g-"$g"-beta-"$beta"-mu-"$mu"-data 
+    cd $dName
 
-    cp ../../../../../defect.o ./
-    ./defect.o $params
+    cp ../../defect.o ./
+    cp ../../ePlot.gnu ./
+    ./defect.o $params | tee -a meanE.dat
     echo 'start video encoding program'
-    cp ../../../../../dtrack.sh ./
-    cp ../../../../../defectT.o ./
+    cp ../../dtrack.sh ./ 
+    cp ../../defectT.o ./
     ./dtrack.sh $N >> output.txt
     mv ./output.txt ../g-"$g"_b-"$beta"_mu-"$mu"-defectTracks.txt
     cd ../
-    cp ../../../../defectMovie.py ./
-    python defectMovie.py
-    cp defect.mp4 ../../../movies/g-"$g"_b-"$beta"_mu-"$mu"-defect.mp4
-    cp dT.mp4 ../../../movies/g-"$g"_b-"$beta"_mu-"$mu"-tracking.mp4
+    pwd
+    cp ../defectMovie.py ./
+    echo $dName
+    python defectMovie.py $dName
+    cp defect.mp4 ./movies/g-"$g"_b-"$beta"_mu-"$mu"-defect.mp4
+    cp dT.mp4 ./movies/g-"$g"_b-"$beta"_mu-"$mu"-tracking.mp4
     mv defect.mp4 g-"$g"_b-"$beta"_mu-"$mu"-defect.mp4
-    cd ../../../
+    cd ../
 done <$file
 #./defect.o 10, .4, 64, 1001
 #mv *.dat data/
