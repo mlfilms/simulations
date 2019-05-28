@@ -3,17 +3,17 @@ implicit none
 
 character(100) :: buffer
 integer :: N = 200, endT=1001
-real(8) :: beta,mu
+real(8) :: beta,mu,measuredT,zeroE, meanK,avedelPhi
 integer, dimension(100) :: tPoints
 integer, allocatable, dimension(:) :: logTPoints
 real(8), allocatable, dimension(:,:) :: grid,dgrid,gridPlusDelta
 real(8) :: x,kappa,windingN,lNoise
-real(8),parameter :: PI = 4*atan(1.0_8), delTime=0.05
+real(8),parameter :: PI = 4*atan(1.0_8), delTime=0.005
 character(12) :: fileNames
 character(20) :: dfileNames
 
-real(8) :: t1=1.2,t2=1.0,dT
-integer :: i,j,t,timePrint=1,tt
+real(8) :: t1=1.2,t2=1.0,dT,dVar=0
+integer :: i,j,t,timePrint=1,tt,dCount=0
 
 !read in arguments (g,beta,mu,N,endT)
 call getarg(1,buffer)
@@ -31,19 +31,22 @@ read(buffer,*),N
 call getarg(5,buffer)
 read(buffer,*),endT
 
+!calculate zero temperature energy
+zeroE = -1*kappa*4.0
 
 !calculate langenvin noise term (c_L in Yurke)
-lNoise=2*1./beta
+!lNoise=sqrt(24*1./beta*delTime)
+lNoise = sqrt(24*1/beta)
 do t=1,100
-    dT = (LOG10(REAL(endT))/100)
+    dT = (LOG10(REAL(endT/delTime))/100)
     tPoints(t) =  INT(10**(t*dT))
 enddo
 logTPoints= tPoints(unique(tPoints))
-write(*,*) logTPoints
+!write(*,*) logTPoints
 
 
 !Initial Random Grid
-write(*,*) 'initialize grid'
+!write(*,*) 'initialize grid'
 allocate(grid(N,N))
 allocate(gridPlusDelta(N,N))
 !write(*,*) grid(N,N)
@@ -55,27 +58,49 @@ do i=1,N
         grid(i,j) = x*2*PI
     end do
 enddo
+gridPlusDelta = grid
+measuredT = 0
+do i=1,N
+    do j=1,N
+        measuredT = (hamXY(i,j,grid(i,j),kappa,mu))/N/N+measuredT
+    enddo
+enddo
+
+
+write(*,*) 'max T', measuredT-zeroE
+
+!open temperature V time file
+open(61,file='tVT.dat',status = 'unknown', position='append')
 
 !initialize defect grid
 allocate(dgrid(N,N))
 dgrid=0
 endT = logTPoints(size(logTPoints))
-write(*,*) 'BEGINING LANGAN PROCESSING...'
+write(*,*) endT
+!write(*,*) 'BEGINING LANGAN PROCESSING...'
 !preform langan with euler update
-do t=1,endT
+do t=1,int(endT)
     !write(*,*) 'time', t
+    avedelPhi = 0
     call update(grid,gridPlusDelta, lNoise,N)
-    write(fileNames,'(A3,I0.3,A4)') 'out', t,'.dat'
-    write(dfileNames,'(A6,I0.3,A4)') 'defect', t,'.dat'
+    meanK = SUM((acos(cos(gridPlusDelta-grid)))**2)/N/N/delTime**2
+    grid=gridPlusDelta
+    write(fileNames,'(A3,i0,A4)') 'out', int(t*delTime),'.dat'
+    write(dfileNames,'(A6,i0,A4)') 'defect', int(t*delTime),'.dat'
         !
     if (logSpace(t) .eq. 1) then
-        print *, trim(fileNames)
+!        print *, trim(fileNames)
 
         open(1,file=fileNames)
         open(3,file=dfileNames)
+
+        ! calculate defects and average energy, and write grid to file
+        measuredT = 0.
+
         do i=1,N
             do j=1,N
             write(1,'(F10.5)',advance="no") grid(i,j)
+            measuredT = (hamXY(i,j,grid(i,j),kappa,mu))/N/N+measuredT
             windingN=(angleDist(grid(modulo(i-2,N)+1,j),grid(i,j)))+&
                 &(angleDist(grid(modulo(i-2,N)+1,modulo(j-2,N)+1),grid(modulo(i-2,N)+1,j)))+&
                 &(angleDist(grid(i,modulo(j-2,N)+1),grid(modulo(i-2,N)+1,modulo(j-2,N)+1)))+&
@@ -92,11 +117,19 @@ do t=1,endT
             write(1,*)
             write(3,*)
         enddo
+        measuredT = (measuredT-zeroE)
+        write(61,'(F12.2,A, F10.5)') t*delTime,',', measuredT, meanK
+        write(*,*) t*delTime,' ', measuredT, meanK, avedelPhi**2/delTime**2/N/N,1./beta
+
         close(1)
         close(3)
     endif
+!write(*,*) 'closing'
 end do
+write(*,*) dVar/dCount/2
+close(61)
 !Write to File
+write(*,*) 'finished langin'
 
 deallocate(grid)
 contains
@@ -124,6 +157,18 @@ contains
         torque = kappa*(sin(x(2)-x(1))+sin(x(2)-x(3))+sin(y(2)-y(1))+sin(y(2)-y(3)))!-mu*sin( (theta-45/2/PI) )
         end function torque
 
+    function hamXY(i,j,theta,kappa,mu)
+        integer :: i,j,ii,jj
+        real(8):: theta
+        real(8) :: kappa,hamXY,mu
+        real(8), dimension(3) :: x,y
+        !write(*,*) 'hamxy', i,j
+        x =(/ grid(modulo(i-2,N)+1,j),theta,grid(modulo(i,N)+1,j)/)
+        y =(/ grid(i,modulo(j-2,N)+1),theta,grid(i,modulo(j,N)+1)/)
+        hamXY = -kappa*(cos(x(2)-x(1))+cos(x(2)-x(3))+cos(y(2)-y(1))+cos(y(2)-y(3)))-mu*cos( (theta-45/2/PI) )
+        end function hamXY
+
+
         subroutine update(state,newstate,lNoise,N)
         real(8) :: theta, thetaP,x,delE,E1,E2,lNoise,flucE,u,force
         integer :: N,ii,jj,i,j
@@ -133,12 +178,18 @@ contains
 
                 theta = grid(ii,jj)
                 force = torque(ii,jj,theta,kappa,mu)
-                call random_number(flucE) 
-                flucE=flucE-.5
-                newstate(ii,jj)=modulo(theta-delTime*(2*PI*flucE*lNoise+force),2*PI)
+                call random_number(flucE)
+                !write(*,*) flucE*lNoise
+                flucE = flucE-.5
+                !flucE = 0
+                newstate(ii,jj)=modulo(theta-delTime*(flucE*lNoise+force),2*PI)
+                avedelPhi = avedelPhi + delTime*flucE*lNoise
+                dVar = dVar+(flucE*lNoise)**2
+                dCount = dCount+1
+                !write(*,*) force, dVar/dCount
+     !           write(*,*) lNoise
             end do
         end do
-        state=newstate
     end subroutine update
             
 

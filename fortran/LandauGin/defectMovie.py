@@ -22,8 +22,11 @@ import time
 import argparse
 import os
 
-fileNames = glob.glob('./data/out*.dat')
-dfileNames = glob.glob('./data/defect*.dat')
+parser = argparse.ArgumentParser(description='Make some movies')
+parser.add_argument('fName',type=str,help='directory name for data')
+args = parser.parse_args()
+fileNames = glob.glob(args.fName+'/out*.dat')
+dfileNames = glob.glob(args.fName+'/defect*.dat')
 params = np.loadtxt('param.txt')
 fN = pd.DataFrame(fileNames)
 fN['time'] = fN[0].str.extract(r'(\d*)\.dat').astype('int')
