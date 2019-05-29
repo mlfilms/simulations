@@ -8,7 +8,7 @@ integer, dimension(100) :: tPoints
 integer, allocatable, dimension(:) :: logTPoints
 real(8), allocatable, dimension(:,:) :: grid,dgrid,gridPlusDelta
 real(8) :: x,kappa,windingN,lNoise
-real(8),parameter :: PI = 4*atan(1.0_8), delTime=0.005
+real(8),parameter :: PI = 4*atan(1.0_8), delTime=0.05
 character(12) :: fileNames
 character(20) :: dfileNames
 

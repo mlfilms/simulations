@@ -33,10 +33,12 @@ do
 
     cp ../../defect.o ./
     cp ../../ePlot.gnu ./
+    cp ../../imgGen.py ./
     ./defect.o $params | tee -a meanE.dat
     echo 'start video encoding program'
     cp ../../dtrack.sh ./
     cp ../../defectT.o ./
+    python ./imgGen.py
     #./dtrack.sh $N >> output.txt
    # mv ./output.txt ../k-"$k"_b-"$beta"_mu-"$mu"-defectTracks.txt
     cd ../
