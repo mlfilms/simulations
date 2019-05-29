@@ -6,7 +6,7 @@ gfortran -O3 -o defectT.o aveDefect.f90
 
 #mkdir data
 #arguments g, beta, N, endT 
-python param.py
+#python param.py #uncomment to have python generate list of parameters
 file="./params.txt"
 runName=$(echo $(date +%Y%m%d_%H%M%S))
 mkdir run"$runName"

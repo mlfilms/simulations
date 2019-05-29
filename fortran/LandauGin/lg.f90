@@ -119,7 +119,7 @@ do t=1,int(endT)
         enddo
         measuredT = (measuredT-zeroE)
         write(61,'(F12.2,A, F10.5)') t*delTime,',', measuredT, meanK
-        write(*,*) t*delTime,' ', measuredT, meanK, avedelPhi**2/delTime**2/N/N,1./beta
+        write(*,*) t*delTime,' ', meanK/2,1./beta
 
         close(1)
         close(3)
