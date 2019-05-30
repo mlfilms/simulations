@@ -1,4 +1,5 @@
 #!/bin/bash
+mkdir dataFolder/
 cp * dataFolder/
 cd dataFolder
 gfortran -O3 -o defect.o lg.f90
