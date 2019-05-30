@@ -3,8 +3,8 @@
     <folder>images</folder>
     <filename>defect74.jpg</filename>
     <size>
-        <width>250</width>
-        <height>250</height>
+        <width>100</width>
+        <height>100</height>
         <depth>3</depth>
     </size>
     <segmented>0</segmented>
