@@ -1,13 +1,13 @@
 import numpy
 import glob
-folder = 'E:\\Projects\\fake\\simulations\\fortran\\LandauGin\\run20190529_144637\\data-k-1.00-beta-10.000-mu-0.000\\'
+folder = 'accumulated/'
 files = glob.glob(folder+'defect*.dat')
 print(len(files))
 #filename = 'E:\\Projects\\fake\\simulations\\fortran\\LandauGin\\run20190529_131519\\data-k-1.00-beta-10.000-mu-0.000\\defect74.dat'
 for file in files:
     fExt = file.split('.')
     fpath = fExt[:-1]
-    print(fpath)
+    #print(fpath)
     outFile = '.'.join(fpath)+'.txt'
     data = numpy.loadtxt(file)
 
