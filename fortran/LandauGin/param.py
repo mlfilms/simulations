@@ -6,7 +6,7 @@ betaL = [i for i in np.linspace(10,10,1)]
 seed = [i for i in np.arange(10)]
 mu = 0
 gridSize = 200
-endTime = 501
+endTime = 100
 
 params = np.array([(k,beta,mu, gridSize,endTime,s) for k in kappaL for beta in betaL for s in seed])
 

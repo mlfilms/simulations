@@ -22,11 +22,12 @@ for dat in allDDat:
     filePath = os.path.dirname(dat)
     numPath = os.path.dirname(filePath)
     runNum = numPath.split('_')[-1]
-    print(runNum)
+    seedNum = filePath.split('-')[-1]
+    print(seedNum)
     simNum = int(file.split('defect')[-1].split('.dat')[0])
     #print(simNum)
     if simNum>3:
-        name = runNum+'_defect'+str(simNum)+'.dat'
+        name = seedNum+'_defect'+str(simNum)+'.dat'
         newFilename = os.path.join(outDir,name)
         shutil.copyfile(dat,newFilename)
     
@@ -40,11 +41,13 @@ for dat in allODat:
     filePath = os.path.dirname(dat)
     numPath = os.path.dirname(filePath)
     runNum = numPath.split('_')[-1]
-    print(runNum)
+    seedNum = filePath.split('-')[-1]
+    print(seedNum)
     simNum = int(file.split('out')[-1].split('.dat')[0])
+    
     #print(simNum)
     if simNum>3:
-        name = runNum+'_out'+str(simNum)+'.dat'
+        name = seedNum+'_out'+str(simNum)+'.dat'
         newFilename = os.path.join(outDir,name)
         shutil.copyfile(dat,newFilename)
     
@@ -55,7 +58,7 @@ from imgGen import imgGen
 imgGen()
 sys.path.append(fileConvertPath)
 from fileConvertBatch import fileConvertBatch
-fileConvertBatch(outDir,[100,100])
+fileConvertBatch(outDir,[200,200])
 
 
 os.chdir(mainDir)
