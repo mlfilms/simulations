@@ -26,7 +26,7 @@ for dat in allDDat:
     print(seedNum)
     simNum = int(file.split('defect')[-1].split('.dat')[0])
     #print(simNum)
-    if simNum>3:
+    if simNum>20:
         name = seedNum+'_defect'+str(simNum)+'.dat'
         newFilename = os.path.join(outDir,name)
         shutil.copyfile(dat,newFilename)
@@ -46,7 +46,7 @@ for dat in allODat:
     simNum = int(file.split('out')[-1].split('.dat')[0])
     
     #print(simNum)
-    if simNum>3:
+    if simNum>20:
         name = seedNum+'_out'+str(simNum)+'.dat'
         newFilename = os.path.join(outDir,name)
         shutil.copyfile(dat,newFilename)

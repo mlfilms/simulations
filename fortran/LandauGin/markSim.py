@@ -1,7 +1,7 @@
 import cv2
 import matplotlib.pyplot as plt
 import pprint as pp
-import numpy as np
+import numpy
 from PIL import Image
 import glob
 import os
@@ -32,3 +32,30 @@ def pointing(original_img , predictions):
     
     
     
+def markSim():
+    folder = 'accumulated/'
+    files = glob.glob(folder+'*defect*.dat')
+    print(len(files))
+    #filename = 'E:\\Projects\\fake\\simulations\\fortran\\LandauGin\\run20190529_131519\\data-k-1.00-beta-10.000-mu-0.000\\defect74.dat'
+    for file in files:
+        fExt = file.split('.')
+        fpath = fExt[:-1]
+        #print(fpath)
+        imgFile = '.'.join(fpath)+'.jpg'
+        outImg = '.'.join(fpath)+'SIMMARKED.jpg'
+        data = numpy.loadtxt(file)
+        locs = numpy.where(data==1)
+        x = locs[0]
+        y = locs[1]
+
+        numDefects = x.shape[0]
+        print(imgFile)
+        imgcv = cv2.imread(imgFile)
+        for i in range(numDefects):
+            imgcv = cv2.circle(imgcv, (y[i], x[i]), 2, (255,0,0), -1)
+        im = Image.fromarray(imgcv)
+        im.save(outImg)
+            #f.write('{} {} {} {}\r\n'.format(y[i]-3,x[i]-3,y[i]+3,x[i]+3));
+
+if __name__ == "__main__":
+    markSim()
