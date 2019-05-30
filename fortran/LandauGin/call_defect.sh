@@ -6,7 +6,7 @@ gfortran -O3 -o defectT.o aveDefect.f90
 
 #mkdir data
 #arguments g, beta, N, endT 
-#python param.py #uncomment to have python generate list of parameters
+python param.py #uncomment to have python generate list of parameters
 file="./params.txt"
 runName=$(echo $(date +%Y%m%d_%H%M%S))
 mkdir run"$runName"
@@ -19,6 +19,7 @@ do
     beta=`echo $params| awk '{print $2}'`
     mu=`echo $params| awk '{print $3}'`
     N=`echo $params| awk '{print $4}'`
+    seed=`echo $params| awk '{print $6}'`
  #   mkdir ./k-"$k"
  #   cd ./k-"$k"
  #   mkdir ./beta-"$beta"
@@ -26,7 +27,7 @@ do
  #   mkdir ./mu-"$mu"
  #   cd ./mu-"$mu"
     echo $params > param.txt
-    dName=`echo "./data-k-$k-beta-$beta-mu-$mu"` 
+    dName=`echo "./data-k-$k-beta-$beta-mu-$mu-seed-$seed"` 
     mkdir $dName
     #mkdir ./g-"$g"-beta-"$beta"-mu-"$mu"-data 
     cd $dName
@@ -45,10 +46,9 @@ do
     pwd
     cp ../defectMovie.py ./
     python defectMovie.py $dName
-    cp defect.mp4 ./movies/k-"$k"_b-"$beta"_mu-"$mu"-defect.mp4
+    cp defect.mp4 ./movies/k-"$k"_b-"$beta"_mu-"$mu"-seed-"$seed"defect.mp4
     cp dT.mp4 ./movies/k-"$k"_b-"$beta"_mu-"$mu"-tracking.mp4
-    mv defect.mp4 k-"$k"_b-"$beta"_mu-"$mu"-defect.mp4
-    cd ../
+    mv defect.mp4 k-"$k"_b-"$beta"_mu-"$mu"-seed-"$seed"defect.mp4
 done <$file
 #./defect.o 10, .4, 64, 1001
 #mv *.dat data/

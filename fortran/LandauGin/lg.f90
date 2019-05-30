@@ -2,7 +2,8 @@ program lanGan
 implicit none
 
 character(100) :: buffer
-integer :: N = 200, endT=1001
+integer :: N = 200, endT=1001,seedN
+integer, dimension(14) :: seed
 real(8) :: beta,mu,measuredT,zeroE, meanK,avedelPhi
 integer, dimension(100) :: tPoints
 integer, allocatable, dimension(:) :: logTPoints
@@ -31,6 +32,8 @@ read(buffer,*),N
 call getarg(5,buffer)
 read(buffer,*),endT
 
+call getarg(6,buffer)
+read(buffer,*), seedN
 !calculate zero temperature energy
 zeroE = -1*kappa*4.0
 
@@ -50,7 +53,9 @@ logTPoints= tPoints(unique(tPoints))
 allocate(grid(N,N))
 allocate(gridPlusDelta(N,N))
 !write(*,*) grid(N,N)
-call random_seed()
+seed = (/ (i+seedN,i=1,14) /)
+
+call random_seed(put=seed)
 do i=1,N
     do j=1,N
 !        write(*,*) i,j
