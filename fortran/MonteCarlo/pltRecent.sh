@@ -1,7 +1,6 @@
 #!/bin/bash
 
-dName=`ls -d run* | sort -n -r |head -1`
-echo $dName
+dName=`ls -d dataFolder/run* | sort -n -r |head -1`
 cd $dName/data*
 bRE='beta-([0-9].?[0-9]*)'
 name=`pwd`

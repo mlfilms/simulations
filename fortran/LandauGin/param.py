@@ -2,13 +2,13 @@ import numpy as np
 import random
 #arguments go like g, beta, N, endT
 
-numRuns = 10
+numRuns = 1
 kappaL = [i for i in np.linspace(1,1,1)]
-betaL = [i for i in np.linspace(10,10,1)]
+betaL = [i for i in np.linspace(2,2,1)]
 seed = [int(random.randint(0,32000)) for i in np.arange(numRuns)]
 mu = 0
 gridSize = 200
-endTime = 100
+endTime = 501
 
 params = np.array([(k,beta,mu, gridSize,endTime,s) for k in kappaL for beta in betaL for s in seed])
 
