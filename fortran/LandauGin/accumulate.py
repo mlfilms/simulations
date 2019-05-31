@@ -62,5 +62,7 @@ fileConvertBatch(outDir,[200,200])
 
 
 os.chdir(mainDir)
+from markSim import markSim
+markSim()
 
 

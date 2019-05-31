@@ -1,9 +1,10 @@
 import numpy as np
+import random
 #arguments go like g, beta, N, endT
 
 kappaL = [i for i in np.linspace(1,1,1)]
 betaL = [i for i in np.linspace(10,10,1)]
-seed = [i for i in np.arange(10)]
+seed = [int(random.randint(0,32000)) for i in np.arange(100)]
 mu = 0
 gridSize = 200
 endTime = 100
