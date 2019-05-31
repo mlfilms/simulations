@@ -5,7 +5,7 @@ import glob
 def datAnnotate():
     folder = 'accumulated/'
     files = glob.glob(folder+'*defect*.dat')
-    print(len(files))
+    #print(len(files))
     #filename = 'E:\\Projects\\fake\\simulations\\fortran\\LandauGin\\run20190529_131519\\data-k-1.00-beta-10.000-mu-0.000\\defect74.dat'
     for file in files:
         fExt = file.split('.')
@@ -19,7 +19,7 @@ def datAnnotate():
         y = locs[1]
 
         numDefects = x.shape[0]
-        print(outFile)
+        #print(outFile)
         f = open(outFile, "w")
         f.write('{}\r\n'.format(numDefects))
 
