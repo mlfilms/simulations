@@ -9,6 +9,9 @@ def schler(angle):
 def imgGen():
     names = glob.glob('*out*.dat')
     frames = [schler(np.loadtxt(n)) for n in names]
+    
+    names = [n.replace('out', 'defect') for n in names]
+    
     [imageio.imwrite(n.split('.')[0]+'.jpg',skimage.img_as_ubyte(im)) for n,im in zip(names,frames)]
     
     
