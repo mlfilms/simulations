@@ -27,6 +27,6 @@ for i in np.arange(nDefects):
     dgrid[dxp,dyp] =1
     dgrid[dxn,dyn] =-1
 imageio.imwrite('training.bmp',skimage.img_as_ubyte(schler(grid)))
-np.savetxt('out.dat',dgrid)
+np.savetxt('out.dat',grid)
 np.savetxt('defect.dat',dgrid)
 
