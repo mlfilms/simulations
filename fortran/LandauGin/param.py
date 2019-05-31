@@ -2,11 +2,11 @@ import numpy as np
 #arguments go like g, beta, N, endT
 
 kappaL = [i for i in np.linspace(1,1,1)]
-betaL = [i for i in np.linspace(10,10,1)]
-seed = [i for i in np.arange(10)]
+betaL = [i for i in np.linspace(2,2,1)]
+seed = [i for i in np.arange(1)]
 mu = 0
 gridSize = 200
-endTime = 501
+endTime = 5001
 
 params = np.array([(k,beta,mu, gridSize,endTime,s) for k in kappaL for beta in betaL for s in seed])
 
