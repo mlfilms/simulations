@@ -4,7 +4,7 @@ import shutil
 import sys
 from datAnnotate import datAnnotate
 
-fileConvertPath = 'E:/Projects/fake/ImageAnnotation/'
+fileConvertPath = 'C:/Users/Eric Minor/TrackingML/defectTracker/ImageAnnotation'
 mainDir = os.getcwd()
 outDir = os.path.join(os.getcwd(),'accumulated');
 
