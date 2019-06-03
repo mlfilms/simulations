@@ -24,7 +24,7 @@ def datAnnotate():
         f.write('{}\r\n'.format(numDefects))
 
         for i in range(numDefects):
-            f.write('{} {} {} {}\r\n'.format(y[i]-3,x[i]-3,y[i]+3,x[i]+3));
+            f.write('{} {} {} {}\r\n'.format(y[i]-5,x[i]-5,y[i]+5,x[i]+5));
 
 
     #print(x.shape[0])
