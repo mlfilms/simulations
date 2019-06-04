@@ -2,6 +2,23 @@
 Code to solve the XY model with both a Monte-Carlo method and a Landau Ginzburg method. I have a simple python implementation that I did to
 test the ideas out, and then I moved to Fortran.
 
+## Running with Docker
+
+The Dockerfile will let you run the simulation code in a docker container. Simply run
+
+```
+docker build -t jeffmm/mlfilms .
+```
+in the root folder to build the container. Alternatively you can simply pull the image from dockerhub with
+```
+docker pull jeffmm/mlfilms:latest
+```
+Navigate to the simulation directory and run the simulation by running the bash script. The script will run the simulation in the container while mounting the current directory, so that output files will sync locally.
+```
+cd fortran/LandauGin/
+bash run_docker.sh
+```
+
 ## Generating Movies
 
 The code is a simple implementation of the Metropolis algorithm. I have it set up with a rat's nest of helper scripts, so I'll take a top down view
