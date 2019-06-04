@@ -4,14 +4,14 @@ test the ideas out, and then I moved to Fortran.
 
 ## Running with Docker
 
-The Dockerfile will let you run the simulation code in a docker container. Simply run
+The simulations can be run in a docker container. Simply pull the docker image from dockerhub with
 
 ```
-docker build -t jeffmm/mlfilms .
-```
-in the root folder to build the container. Alternatively you can simply pull the image from dockerhub with
-```
 docker pull jeffmm/mlfilms:latest
+```
+Alternatively, you can build the container locally by navigating to the root folder of the repo and running
+```
+bash build_docker.sh
 ```
 Navigate to the simulation directory and run the simulation by running the bash script. The script will run the simulation in the container while mounting the current directory, so that output files will sync locally.
 ```
