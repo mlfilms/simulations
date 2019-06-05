@@ -9,6 +9,7 @@ gfortran -O3 -o defectT.o aveDefect.f90
 #arguments g, beta, N, endT 
 python param.py #uncomment to have python generate list of parameters
 file="./params.txt"
+decross='60'
 runName=$(echo $(date +%Y%m%d_%H%M%S))
 mkdir run"$runName"
 cd run"$runName"
@@ -40,7 +41,7 @@ do
     echo 'start video encoding program'
     cp ../../dtrack.sh ./
     cp ../../defectT.o ./
-    python ./imgGen.py
+    python ./imgGen.py $decross
     #./dtrack.sh $N >> output.txt
    # mv ./output.txt ../k-"$k"_b-"$beta"_mu-"$mu"-defectTracks.txt
     cd ../
