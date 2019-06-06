@@ -3,7 +3,7 @@ implicit none
 
 character(100) :: buffer
 integer :: N = 200, endT=1001
-real(8) :: beta,mu,measuredT,zeroE
+real(8) :: beta,mu,measuredT,zeroE,meanK,totalK,meanDelPhi
 integer, dimension(100) :: tPoints
 integer, allocatable, dimension(:) :: logTPoints
 real(8), allocatable, dimension(:,:) :: grid,dgrid,oldGrid
@@ -43,13 +43,14 @@ zeroE = -g*4.0
 !Initial Random Grid
 !write(*,*) 'initialize grid'
 allocate(grid(N,N))
+allocate(oldgrid(N,N))
 !write(*,*) grid(N,N)
 call random_seed()
 do i=1,N
     do j=1,N
 !        write(*,*) i,j
         call random_number(x)
-        grid(i,j) = x*2*PI
+        grid(i,j) = x*2*PI-PI
     end do
 enddo
 !open temperature V time file
@@ -61,8 +62,12 @@ dgrid=0
 !Preform the metropolis algorithm with XY hamiltonian
 do t=1,endT
     !write(*,*) 'time', t
+    oldGrid = grid
     call metro(grid,beta,N)
     
+    totalK = SUM((acos(cos(grid-oldGrid)))**2)
+    meanK = totalK/N**2
+    meanDelPhi = sqrt(totalK)/N*2
     write(fileNames,'(A3,I0.3,A4)') 'out', t,'.dat'
     write(dfileNames,'(A6,I0.3,A4)') 'defect', t,'.dat'
         !
@@ -78,13 +83,13 @@ do t=1,endT
             do j=1,N
             write(1,'(F10.5)',advance="no") grid(i,j)
             measuredT = (hamXY(i,j,grid(i,j),g,mu))/N/N+measuredT
-            windingN=(angleDist(grid(modulo(i-2,N)+1,j),grid(i,j)))+&
-                &(angleDist(grid(modulo(i-2,N)+1,modulo(j-2,N)+1),grid(modulo(i-2,N)+1,j)))+&
-                &(angleDist(grid(i,modulo(j-2,N)+1),grid(modulo(i-2,N)+1,modulo(j-2,N)+1)))+&
-                &(angleDist(grid(i,j),grid(i,modulo(j-2,N)+1)))
-            if (windingN .ge. 2*PI) then
+            windingN=(windN(grid(modulo(i-2,N)+1,j)-grid(i,j)))+&
+                &(windN(grid(modulo(i-2,N)+1,modulo(j-2,N)+1)-grid(modulo(i-2,N)+1,j)))+&
+                &(windN(grid(i,modulo(j-2,N)+1)-grid(modulo(i-2,N)+1,modulo(j-2,N)+1)))+&
+                &(windN(grid(i,j)-grid(i,modulo(j-2,N)+1)))
+            if (windingN .ge. 1) then
                 dgrid(i,j) =1
-            else if (-1*windingN .ge. 2*PI) then
+            else if (-1*windingN .ge. 1) then
                 dgrid(i,j)=-1
             else
                 dgrid(i,j)=0
@@ -96,7 +101,7 @@ do t=1,endT
         enddo
         measuredT = (measuredT-zeroE)
         write(61,'(I10,A, F10.5)') t,',', measuredT
-        write(*,*) t,' ', measuredT
+        write(*,*) t,' ', measuredT,meanDelPhi,meanK/2,1/beta
 
 
         close(1)
@@ -107,7 +112,10 @@ close(61)
 
 deallocate(grid)
 contains
-
+    function windN(angle)
+        real(8) :: angle, windN
+        windN = (angle-asin(sin(angle)) / (2*PI) )
+        end function windN
     function logSpace(t)
         integer :: t, logSpace
         if (t .eq. logTPoints(timePrint)) then
@@ -130,7 +138,11 @@ contains
         y =(/ grid(i,modulo(j-2,N)+1),theta,grid(i,modulo(j,N)+1)/)
         hamXY = -g*(cos(x(2)-x(1))+cos(x(2)-x(3))+cos(y(2)-y(1))+cos(y(2)-y(3)))-mu*cos( (theta-45/2/PI) )
         end function hamXY
-
+        
+        subroutine normAngle(i,j,N)
+            integer:: i,j,n
+                grid(i,j) = asin(sin(grid(i,j)))
+                end subroutine normAngle
         subroutine metro(state,beta,N)
         real(8) :: theta, thetaP,x,delE,E1,E2,beta,flucE,u
         integer :: N,ii,jj,i,j
@@ -145,7 +157,7 @@ contains
                 j = 1+floor(N*u)
 
                 theta = state(i,j)
-                thetaP = modulo(theta+(x*2*PI),2*PI)
+                thetaP = (x*2*PI-PI)
                ! write(*,*) 'metro',i,j
                 E1 = hamXY(i,j,theta,g,mu)
                 E2 = hamXY(i,j,thetaP,g,mu)
@@ -153,7 +165,7 @@ contains
                 call random_number(flucE) 
                 if (delE < 0) then
                     state(i,j) = thetaP
-                else if (flucE < exp(-delE*beta)) then
+                else if (flucE .le. exp(-delE*beta)) then
                     state(i,j) = thetaP
                 end if
             end do
