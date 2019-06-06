@@ -9,7 +9,10 @@ RUN apt-get update && apt-get install -y \
     liblapack-dev \
     libxft-dev \
     wget \
-    vim &&\
+    vim \
+    libsm6 \
+    libxext6 \
+    libxrender-dev &&\
     wget https://github.com/opensourcedesign/fonts/raw/master/gnu-freefont_freesans/FreeSansBold.ttf &&\
     mv FreeSansBold.ttf /usr/share/fonts/truetype &&\
     rm -rf /var/lib/apt/lists/* &&\
