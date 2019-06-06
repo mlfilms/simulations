@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t jeffmm/mlfilms:latest .
+docker build -t mlfilmslab/simulations:latest .
