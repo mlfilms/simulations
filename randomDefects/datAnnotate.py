@@ -14,7 +14,7 @@ def datAnnotate():
         outFile = '.'.join(fpath)+'.txt'
         data = numpy.loadtxt(file)
 
-        locs = numpy.where(data==1)
+        locs = numpy.where(abs(data)==1)
         x = locs[0]
         y = locs[1]
 

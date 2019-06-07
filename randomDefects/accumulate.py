@@ -58,7 +58,7 @@ sys.path.append(outDir)
 os.chdir(outDir)
 from imgGen import imgGen
 print("Generating Images")
-imgGen()
+imgGen(50)
 sys.path.append(fileConvertPath)
 from fileConvertBatch import fileConvertBatch
 fileConvertBatch(outDir,[200,200])
