@@ -6,7 +6,6 @@ import imageio
 import argparse
 
 
-
 def decrossI(beta,image):
     #beta is the angle between pol and anl (90 for completely crossed)
     temp= ( np.sin(image)*np.cos(image)*np.sin(beta)-np.sin(image)**2*np.cos(beta)-np.cos(beta))**2

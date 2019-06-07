@@ -92,7 +92,7 @@ def make_dframe(t):
 
 print('starting video encoding')
 animation = VideoClip(make_frame,duration=(len(imSeq)-1)/fps)
-animation.write_videofile('defect.mp4',fps = 24,audio=False,progress_bar=True,threads=4)
+animation.write_videofile('defect.mp4',fps = 24,audio=False,threads=4)
 
 danimation = VideoClip(make_dframe,duration=(len(imSeq)-1)/fps)
-danimation.write_videofile('dT.mp4',fps = 24,audio=False,progress_bar=True,threads=4)
+danimation.write_videofile('dT.mp4',fps = 24,audio=False,threads=4)
