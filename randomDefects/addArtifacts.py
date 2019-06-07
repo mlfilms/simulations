@@ -39,6 +39,17 @@ def standardize(image):
     image = np.clip(image,0,1)
     return image
 
+
+def standardizeRand(image):
+    image = image.astype(np.float64)
+    imgMean = np.mean(image)
+    imgSTD = np.std(image)
+    image= (image - imgMean)/(random.uniform(0.5,24)*imgSTD)
+    image = image+random.uniform(0.3,0.7)
+    #image = image*255
+    image = np.clip(image,0,1)
+    return image
+
 def rgb2gray(rgb):
 
     r, g, b = rgb[:,:,0], rgb[:,:,1], rgb[:,:,2]
@@ -47,6 +58,7 @@ def rgb2gray(rgb):
     return gray
 
 def randomChanges(image,noiseImages,sigmaRange,skewRange):
+    
     noiseImage = noiseImages[random.randint(0,len(noiseImages))-1]
     noiseImage = standardize(noiseImage)
     nDims = noiseImage.shape
@@ -59,13 +71,14 @@ def randomChanges(image,noiseImages,sigmaRange,skewRange):
 
     image = gaussian_filter(image,sigma=random.uniform(0,sigmaRange))
     image = image*random.uniform(0.4,1.6)
-    image = image+noiseImage
+    noiseStrength = random.uniform(0.3,2.5)
+    image = image+noiseImage*noiseStrength
     return image
 
 
 targetDir = os.path.join(os.getcwd(),'accumulated')
 ext = 'jpg'
-outEXT = 'bmp'
+outEXT = 'jpg'
 outDir = targetDir+"\\outMess\\"
 
 if not os.path.exists(outDir):
@@ -78,9 +91,10 @@ for filename in glob.glob('noiseFiles\\*.jpg'):
     noiseImages.append(imgcv)
 
 filePattern = 	targetDir+"\\*." + ext
-
+num = 1
 for filename in glob.glob(filePattern):
-    
+    print(num)
+    num = num+1
     imgcv = cv2.imread(filename)
     #print(imgcv.dtype)
 
@@ -107,7 +121,7 @@ for filename in glob.glob(filePattern):
     #imgcv = gaussian_filter(imgcv,sigma=2)
     #imgcv = addScans(imgcv)
     image = standardize(imgcv)
-    noiseImage = standardize(noiseImages[0])
+    noiseImage = standardizeRand(noiseImages[0])
 
     #noiseImage = cv2.resize(noiseImage, (gDims[0],gDims[1]), interpolation = cv2.INTER_AREA)
     image = randomChanges(image,noiseImages,1.5,500)
@@ -123,8 +137,8 @@ for filename in glob.glob(filePattern):
         im = im.convert('RGB')
 
     im.save(outDir+noEnd+'.'+outEXT)
-    fig,ax = plt.subplots()
-    imgplot = ax.imshow(imgcv)
+    #fig,ax = plt.subplots()
+    #imgplot = ax.imshow(imgcv)
     #plt.show()
 
 
