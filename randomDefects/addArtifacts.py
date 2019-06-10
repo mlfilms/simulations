@@ -72,8 +72,20 @@ def randomChanges(image,noiseImages,sigmaRange,skewRange):
     image = gaussian_filter(image,sigma=random.uniform(0,sigmaRange))
     image = image*random.uniform(0.4,1.6)
     noiseStrength = random.uniform(0.3,2.5)
+    image = randomGrid(image)
     image = image+noiseImage*noiseStrength
     return image
+
+def randomGrid(image):
+    dims = image.shape
+    x = random.randint(0,dims[0])
+    y = random.randint(0,dims[1])
+    image[:x,:y] = image[:x,:y] +random.uniform(-0.5,0.5)
+    image[x:,:y] = image[x:,:y] +random.uniform(-0.5,0.5)
+    image[:x,y:] = image[:x,y:] +random.uniform(-0.5,0.5)
+    image[:x,:y] = image[:x,:y] +random.uniform(-0.5,0.5)
+    return image
+
 
 
 targetDir = os.path.join(os.getcwd(),'accumulated')
