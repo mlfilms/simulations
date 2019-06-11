@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import pprint as pp
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageDraw
 import glob
 import os
 import random
@@ -44,11 +44,30 @@ def standardizeRand(image):
     image = image.astype(np.float64)
     imgMean = np.mean(image)
     imgSTD = np.std(image)
-    image= (image - imgMean)/(random.uniform(0.5,24)*imgSTD)
+    image= (image - imgMean)/(random.uniform(0.5,12)*imgSTD)
     image = image+random.uniform(0.3,0.7)
     #image = image*255
     image = np.clip(image,0,1)
     return image
+
+def addCircle(image,xCoord,yCoord,radius):
+    dims = image.shape
+    xx,yy = np.mgrid[:dims[0],:dims[1]]
+
+    radius = 10
+
+
+    circle = radius>((xx - xCoord)**2+(yy-yCoord)**2)**(1/2)
+
+    image[circle] = image[circle] + random.uniform(0.1,0.5)
+    return image
+
+def nRandCircles(image,n):
+    dims = image.shape
+    for i in range(0,n):
+        image = addCircle(image,random.randint(0,dims[0]),random.randint(0,dims[1]),random.randint(5,20))
+    return image
+
 
 def rgb2gray(rgb):
 
@@ -74,6 +93,7 @@ def randomChanges(image,noiseImages,sigmaRange,skewRange):
     noiseStrength = random.uniform(0.3,2.5)
     image = randomGrid(image)
     image = image+noiseImage*noiseStrength
+    image = nRandCircles(image,3)
     return image
 
 def randomGrid(image):
@@ -87,70 +107,57 @@ def randomGrid(image):
     return image
 
 
+def addArtifacts():
+    targetDir = os.path.join(os.getcwd(),'accumulated')
+    ext = 'jpg'
+    outEXT = 'jpg'
+    outDir = targetDir+"\\outMess\\"
 
-targetDir = os.path.join(os.getcwd(),'accumulated')
-ext = 'jpg'
-outEXT = 'jpg'
-outDir = targetDir+"\\outMess\\"
-
-if not os.path.exists(outDir):
-    os.makedirs(outDir)
-
-
-noiseImages = []
-for filename in glob.glob('noiseFiles\\*.jpg'):
-    imgcv = cv2.imread(filename)
-    noiseImages.append(imgcv)
-
-filePattern = 	targetDir+"\\*." + ext
-num = 1
-for filename in glob.glob(filePattern):
-    print(num)
-    num = num+1
-    imgcv = cv2.imread(filename)
-    #print(imgcv.dtype)
-
-    sections = filename.split("\\")
-    imName = sections[-1]
-    
-    #im.save(outDir+imName)
-    
-    #print(result)
-    prePost = imName.split(".")
-    noEnd = prePost[0]
+    if not os.path.exists(outDir):
+        os.makedirs(outDir)
 
 
-    imgMean = np.mean(imgcv)
-    imgSTD = np.std(imgcv)
-    #print(imgMean)
-    #print(imgSTD)
+    noiseImages = []
+    for filename in glob.glob('noiseFiles\\*.jpg'):
+        imgcv = cv2.imread(filename)
+        noiseImages.append(imgcv)
 
-    #imgcv= (imgcv - imgMean)/(6*imgSTD)
-    #imgcv = imgcv+0.5
-    #imgcv = imgcv*255
-    #imgcv = np.clip(imgcv,1,255)
-    #imgcv = imgcv.astype(np.uint8)
-    #imgcv = gaussian_filter(imgcv,sigma=2)
-    #imgcv = addScans(imgcv)
-    image = standardize(imgcv)
-    noiseImage = standardizeRand(noiseImages[0])
+    filePattern = 	targetDir+"\\*." + ext
+    num = 1
+    for filename in glob.glob(filePattern):
 
-    #noiseImage = cv2.resize(noiseImage, (gDims[0],gDims[1]), interpolation = cv2.INTER_AREA)
-    image = randomChanges(image,noiseImages,1.5,500)
-    
-    #image = image+noiseImage
-    image = standardize(image)
-    image = rgb2gray(image)
-    #print(image.shape)
-    image = np.clip(image,0,1)
-    im = Image.fromarray(image*255)
+        num = num+1
+        imgcv = cv2.imread(filename)
 
-    if im.mode != 'RGB':
-        im = im.convert('RGB')
+        sections = filename.split("\\")
+        imName = sections[-1]
+        
 
-    im.save(outDir+noEnd+'.'+outEXT)
-    #fig,ax = plt.subplots()
-    #imgplot = ax.imshow(imgcv)
-    #plt.show()
+        prePost = imName.split(".")
+        noEnd = prePost[0]
 
 
+        imgMean = np.mean(imgcv)
+        imgSTD = np.std(imgcv)
+
+
+        image = standardizeRand(imgcv)
+        noiseImage = standardizeRand(noiseImages[0])
+
+
+        image = randomChanges(image,noiseImages,1.5,500)
+
+        image = standardize(image)
+        image = rgb2gray(image)
+
+        image = np.clip(image,0,1)
+        im = Image.fromarray(image*255)
+
+        if im.mode != 'RGB':
+            im = im.convert('RGB')
+
+        im.save(outDir+noEnd+'.'+outEXT)
+
+
+if __name__ == '__main__':
+    addArtifacts()

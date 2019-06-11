@@ -4,6 +4,7 @@ import glob as glob
 import skimage
 import imageio
 import argparse
+import random
 
 
 def decrossI(beta,image):
@@ -14,9 +15,23 @@ def decrossI(beta,image):
 def schler(angle):
     return np.sin(2.*angle)**2.
 def imgGen(decross):
-    beta = np.pi/2+decross/180*np.pi
-    names = glob.glob('*out*.dat')
+    beta = (np.pi/2+decross/180*np.pi)
+    names = glob.glob('accumulated/*out*.dat')
     frames = [decrossI(beta,np.loadtxt(n)) for n in names]
+    
+    names = [n.replace('out', 'defect') for n in names]
+    
+    [imageio.imwrite(n.split('.')[0]+'.jpg',skimage.img_as_ubyte(im)) for n,im in zip(names,frames)]
+
+
+def imgGenRand(decrossMin,decrossMax):
+    decrossMean = (decrossMin+decrossMax)/2
+    decrossDiff = decrossMax-decrossMin
+    
+    names = glob.glob('*out*.dat')
+    decross = np.random.rand(len(names))*decrossDiff+(decrossMean-decrossDiff/2)
+    betas = np.pi/2+decross/180*np.pi
+    frames = [decrossI(beta,np.loadtxt(n)) for (beta,n) in zip(betas,names)]
     
     names = [n.replace('out', 'defect') for n in names]
     

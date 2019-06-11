@@ -1,6 +1,5 @@
 # XYModel
-Code to solve the XY model with both a Monte-Carlo method and a Landau Ginzburg method. I have a simple python implementation that I did to
-test the ideas out, and then I moved to Fortran.
+Code to solve the XY model with both a Monte-Carlo method and a Landau Ginzburg method. I have a simple python implementation that I did to test the ideas out, and then I moved to Fortran.
 
 ## Running with Docker
 
@@ -18,6 +17,23 @@ Navigate to the simulation directory and run the simulation by running the bash 
 cd fortran/LandauGin/
 bash run_docker.sh
 ```
+## Random Defect Generation
+The folder randomDefects contains the code necessary for generating perfectly annotated simulation data.
+Run 
+```
+./call_defect.sh
+```
+to generate data files of simulated defects. You can modify the last number in the line
+```
+for value in {1..100}
+```
+to change how many data files are generated.
+To transform those data files into images and annotations useful for machine learning, run 
+```
+python accumulate.py
+```
+This script will create a new folder called accumulated which contains all of the generated defect setups in image form, a folder containing images with the defects marked, a folder containing xml annotations for the defects, and a folder with noisy versions of the images (useful for training)
+
 
 ## Generating Movies
 
@@ -55,9 +71,10 @@ I don't know enough about Monte-Carlo stuff, but because you aren't directly int
 not be linearly proportional to real time.
 
 ## The Landau-Ginzburg 
-The high level view of this method is that you are solving Newton's equations for a **torque** with added thermal flucuations. Because you
-have actually made contact with an equation of motion, I'm more comfortable interpreting each time-step of the simulation as real time.
+The high level view of this method is that you are solving Newton's equations for a **torque** with added thermal flucuations. Because you have actually made contact with an equation of motion, I'm more comfortable interpreting each time-step of the simulation as real time.
 
 ## Dependencies
 The python programs needs the usual suspects: pandas, numpy, matplotlib, as well as moviepy and PIL
 The fortran program doesn't have any dependencies-- I'm not linking any externals to it.
+
+```

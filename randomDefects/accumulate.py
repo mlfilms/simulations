@@ -3,11 +3,12 @@ import os
 import shutil
 import sys
 from datAnnotate import datAnnotate
+from addArtifacts import addArtifacts
 
 #
-fileConvertPath = 'E:/Projects/fake/ImageAnnotation'
+fileConvertPath = 'C:/Users/Eric Minor/TrackingML/defectTracker/ImageAnnotation'
 mainDir = os.getcwd()
-outDir = os.path.join(os.getcwd(),'accumulated');
+outDir = os.path.join(os.getcwd(),'accumulated')
 
 #print(outDir)
 if os.path.exists(outDir):
@@ -56,9 +57,9 @@ for dat in allODat:
 shutil.copyfile('imgGen.py',os.path.join(outDir,'imgGen.py'))
 sys.path.append(outDir)
 os.chdir(outDir)
-from imgGen import imgGen
+from imgGen import imgGenRand
 print("Generating Images")
-imgGen(50)
+imgGenRand(35,65)
 sys.path.append(fileConvertPath)
 from fileConvertBatch import fileConvertBatch
 fileConvertBatch(outDir,[200,200])
@@ -68,5 +69,8 @@ os.chdir(mainDir)
 from markSim import markSim
 print("Generating Simulation Annotated Images")
 markSim()
+print("Generating Noisy Training Images")
+addArtifacts()
 print("Done")
+
 
