@@ -9,7 +9,7 @@ decross=25
 mkdir data
 mkdir im
 cp ../../randomD.py ./
-for value in {1..100}
+for value in {1..10}
 do
     python randomD.py $decross
     name1=`echo "out$value.dat"`

@@ -2,5 +2,6 @@
 *.avi
 *.mp4
 **/dataFolder/*
+**/dataFolderThousand/*
 **/accumulated/*
 
