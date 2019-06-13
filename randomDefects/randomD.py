@@ -5,7 +5,7 @@ import skimage
 import random
 import argparse
 
-def randomD(decross,dims):
+def randomD(decross,dims,nDefects):
     xDim = dims[0]
     yDim = dims[1]
     beta = np.pi/2+decross/180*np.pi
@@ -14,7 +14,7 @@ def randomD(decross,dims):
         temp= ( np.sin(image)*np.cos(image)*np.sin(beta)-np.sin(image)**2*np.cos(beta)-np.cos(beta))**2
         return temp/temp.max()
         
-    nDefects = 20
+    #nDefects = 20
     grid = np.reshape(np.zeros(xDim*yDim),(xDim,yDim))
     dgrid = np.reshape(np.zeros(xDim*yDim),(xDim,yDim))
     ix,iy = np.indices((xDim,yDim))
@@ -47,4 +47,4 @@ if __name__ == "__main__":
     parser.add_argument('dims',nargs='?',help='simulation dimensions [x,y]',type = float,default = [100,100])
     args=parser.parse_args()
     
-    randomD(args.decross,args.dims)
+    randomD(args.decross,args.dims,20)

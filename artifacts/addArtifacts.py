@@ -164,10 +164,14 @@ def addArtifacts(cfg):
 
             if cfg['artifacts']['smartNoise']:
                 noiseImages = []
-                for filename in glob.glob('noiseFiles\\*.jpg'):
+                noisePath = os.path.join(cfg['temp']['rootDir'],cfg['paths']['noiseFiles'])
+                noiseFilePattern = os.path.join(noisePath,'*.jpg')
+                print(noiseFilePattern)
+                for filename in glob.glob(noiseFilepattern)#glob.glob('noiseFiles\\*.jpg'):
                     imgcv = cv2.imread(filename)
                     noiseImages.append(imgcv)
                 image = randomChanges(image)
+                print(noiseFilePattern)
                 image = addSmartNoise(image,noiseImages)
             else:
                 image = randomChanges(image)

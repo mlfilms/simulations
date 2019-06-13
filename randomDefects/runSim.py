@@ -15,7 +15,10 @@ def runSimLocal():
 
 def runSim(cfg):
 
-    create_defects(cfg['simulation']['images'], [cfg['simulation']['xDim'],cfg['simulation']['yDim']])
+    numImages = cfg['simulation']['images']
+    imageDims = [cfg['simulation']['xDim'],cfg['simulation']['yDim']]
+    numDefects = cfg['simulation']['numDefects']
+    create_defects(numImages,imageDims,numDefects)
     fileConvertPath = os.path.join(cfg['temp']['rootDir'],cfg['paths']['fileConvert'])
     mainDir = os.getcwd()
     outDir = os.path.join(os.getcwd(),'accumulated')

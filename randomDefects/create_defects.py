@@ -4,7 +4,7 @@ import os
 import datetime
 import shutil
 
-def create_defects(defectNum,dims):
+def create_defects(numImages,dims,numDefects):
     baseDir = os.getcwd()
 
     def safeMake(dir):
@@ -37,8 +37,8 @@ def create_defects(defectNum,dims):
     os.chdir(runDir)
     from randomD import randomD
 
-    for i in range(0,defectNum):
-        randomD(decross,dims)
+    for i in range(0,numImages):
+        randomD(decross,dims,numDefects)
         shutil.copyfile('out.dat',os.path.join(dataDir2,'out%d.dat' %(i)))
         shutil.copyfile('defect.dat',os.path.join(dataDir2,'defect%d.dat' %(i)))
         shutil.copyfile('training.bmp',os.path.join(imDir,'image%d.bmp' %(i)))
