@@ -133,7 +133,7 @@ def addArtifacts(cfg):
         targetDir = os.path.join(os.getcwd(),cfg['paths']['simImagesPath'])
         ext = 'jpg'
         outEXT = 'jpg'
-        outDir = targetDir+"\\outMess\\"
+        outDir = os.path.join(targetDir,'outMess')
 
         if not os.path.exists(outDir):
             os.makedirs(outDir)
@@ -141,13 +141,13 @@ def addArtifacts(cfg):
 
 
 
-        filePattern = 	targetDir+"\\*." + ext
+        filePattern = 	targetDir+"/*." + ext
         num = 1
         for filename in glob.glob(filePattern):
             num = num+1
             imgcv = cv2.imread(filename)
 
-            sections = filename.split("\\")
+            sections = filename.split("/")
             imName = sections[-1]
             
 
@@ -164,7 +164,7 @@ def addArtifacts(cfg):
 
             if cfg['artifacts']['smartNoise']:
                 noiseImages = []
-                for filename in glob.glob('noiseFiles\\*.jpg'):
+                for filename in glob.glob('noiseFiles/*.jpg'):
                     imgcv = cv2.imread(filename)
                     noiseImages.append(imgcv)
                 image = randomChanges(image)
