@@ -141,7 +141,7 @@ def addArtifacts(cfg):
 
 
 
-        filePattern = 	targetDir+"/*." + ext
+        filePattern = 	os.path.join(targetDir,"/*." , ext)
         num = 1
         for filename in glob.glob(filePattern):
             num = num+1
