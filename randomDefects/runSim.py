@@ -1,5 +1,6 @@
 import glob
 import os
+import random
 import shutil
 import sys
 import yaml
@@ -17,8 +18,9 @@ def runSim(cfg):
 
     numImages = cfg['simulation']['images']
     imageDims = [cfg['simulation']['xDim'],cfg['simulation']['yDim']]
-    numDefects = cfg['simulation']['numDefects']
-    create_defects(numImages,imageDims,numDefects)
+    maxDefects = cfg['simulation']['maxDefects']
+    minDefects = cfg['simulation']['minDefects']
+    create_defects(numImages,imageDims,[minDefects,maxDefects])
     fileConvertPath = os.path.join(cfg['temp']['rootDir'],cfg['paths']['fileConvert'])
     mainDir = os.getcwd()
     outDir = os.path.join(os.getcwd(),'accumulated')

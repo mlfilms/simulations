@@ -5,7 +5,7 @@ import skimage
 import random
 import argparse
 
-def randomD(decross,dims,nDefects):
+def randomD(decross,dims,nDefects, fileNames):
     xDim = dims[0]
     yDim = dims[1]
     beta = np.pi/2+decross/180*np.pi
@@ -37,9 +37,9 @@ def randomD(decross,dims,nDefects):
         grid = dGen(grid,dxn,dyn,-1,random.random()*2*np.pi)
         dgrid[dxp,dyp] =1
         dgrid[dxn,dyn] =-1
-    imageio.imwrite('training.bmp',skimage.img_as_ubyte(decrossI(beta, grid)))
-    np.savetxt('out.dat',grid)
-    np.savetxt('defect.dat',dgrid)
+    imageio.imwrite(fileNames[2],skimage.img_as_ubyte(decrossI(beta, grid)))
+    np.savetxt(fileNames[0],grid)
+    np.savetxt(fileNames[1],dgrid)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

@@ -3,6 +3,8 @@ import sys
 import os
 import datetime
 import shutil
+import random
+from joblib import Parallel,delayed
 
 def create_defects(numImages,dims,numDefects):
     baseDir = os.getcwd()
@@ -37,12 +39,24 @@ def create_defects(numImages,dims,numDefects):
     os.chdir(runDir)
     from randomD import randomD
 
+    def process(i,defects):
+        print(i)
+        outdat = os.path.join(dataDir2,'out%d.dat' %(i))
+        defectdat = os.path.join(dataDir2,'defect%d.dat' %(i))
+        img = os.path.join(imDir,'image%d.bmp' %(i))
+        randomD(decross,dims,numDefects[0]+i, [outdat,defectdat,img])
+
+    Parallel(n_jobs=-1,verbose=1)(delayed(process)(i, random.randint(numDefects[0],numDefects[1])) for i in range(0,numImages))
+
+    '''
     for i in range(0,numImages):
-        randomD(decross,dims,numDefects)
-        shutil.copyfile('out.dat',os.path.join(dataDir2,'out%d.dat' %(i)))
-        shutil.copyfile('defect.dat',os.path.join(dataDir2,'defect%d.dat' %(i)))
-        shutil.copyfile('training.bmp',os.path.join(imDir,'image%d.bmp' %(i)))
+        print(i)
+        outdat = os.path.join(dataDir2,'out%d.dat' %(i))
+        defectdat = os.path.join(dataDir2,'defect%d.dat' %(i))
+        img = os.path.join(imDir,'image%d.bmp' %(i))
+        randomD(decross,dims,numDefects[0]+i, [outdat,defectdat,img])
+    '''
     os.chdir(baseDir)
 if __name__ == "__main__":
-    create_defects(10,[300,300])
+    create_defects(10,[300,300],[10,40])
 
