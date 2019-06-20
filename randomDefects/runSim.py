@@ -20,6 +20,9 @@ def runSim(cfg):
     imageDims = [cfg['simulation']['xDim'],cfg['simulation']['yDim']]
     maxDefects = cfg['simulation']['maxDefects']
     minDefects = cfg['simulation']['minDefects']
+
+
+    print("Generating Defects")
     create_defects(numImages,imageDims,[minDefects,maxDefects])
     fileConvertPath = os.path.join(cfg['temp']['rootDir'],cfg['paths']['fileConvert'])
     mainDir = os.getcwd()

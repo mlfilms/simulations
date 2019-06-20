@@ -8,7 +8,7 @@ from joblib import Parallel,delayed
 
 def create_defects(numImages,dims,numDefects):
     baseDir = os.getcwd()
-
+    dims.reverse()
     def safeMake(dir):
         if not os.path.exists(dir):
             os.makedirs(dir)
@@ -40,13 +40,13 @@ def create_defects(numImages,dims,numDefects):
     from randomD import randomD
 
     def process(i,defects):
-        print(i)
+        #print(i)
         outdat = os.path.join(dataDir2,'out%d.dat' %(i))
         defectdat = os.path.join(dataDir2,'defect%d.dat' %(i))
         img = os.path.join(imDir,'image%d.bmp' %(i))
-        randomD(decross,dims,numDefects[0]+i, [outdat,defectdat,img])
+        randomD(decross,dims,defects, [outdat,defectdat,img])
 
-    Parallel(n_jobs=-1,verbose=1)(delayed(process)(i, random.randint(numDefects[0],numDefects[1])) for i in range(0,numImages))
+    Parallel(n_jobs=-1)(delayed(process)(i, random.randint(numDefects[0],numDefects[1])) for i in range(0,numImages))
 
     '''
     for i in range(0,numImages):
