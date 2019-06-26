@@ -53,7 +53,7 @@ def runSim(cfg):
         shutil.copyfile(dat,newFilename)
         
     allODat = glob.glob('dataFolder/**/**/out*.dat')
-    print("Generating xml files")
+    
     datAnnotate()
     print("Transfering out.dat files")
     for dat in allODat:
@@ -79,8 +79,9 @@ def runSim(cfg):
     print("Generating Images")
     imgGenRand(cfg['simulation']['decrossMin'],cfg['simulation']['decrossMax'])
     sys.path.append(fileConvertPath)
+    print("Generating xml files")
     from fileConvertBatch import fileConvertBatch
-    fileConvertBatch(outDir,[cfg['simulation']['xDim'],cfg['simulation']['yDim']])
+    fileConvertBatch(outDir,[cfg['simulation']['xDim'],cfg['simulation']['yDim']],'txt')
 
 
     os.chdir(mainDir)
