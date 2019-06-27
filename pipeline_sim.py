@@ -4,6 +4,7 @@ import shutil
 import sys
 import glob
 import stat
+import random
 
 def simulate(targetLocation,k,beta,mu,N,endT,seed):
   simDir = os.path.join(os.getcwd(),'tmpFolder')
@@ -36,7 +37,7 @@ def performSimulation(simDir,k,beta,mu,N,endT,seed):
   #subprocess.run(['sudo','chmod','+x','tmpFolder/defect.o'])
   #subprocess.run(['chmod','+x','tmpFolder/defectT.o'])
   print('here')
-  os.chmod('defect.o',stat.S_IRWXO)
+  os.chmod('defect.o',0o777)
   #subprocess.run(['chmod','+x','defect.o'])
   tmp = subprocess.run(['./defect.o',str(k),str(beta),str(mu),str(N),str(endT),str(seed)])
   subprocess.run(['python','imgGen.py'])
@@ -65,4 +66,4 @@ def cleanupDirectory(simDir):
   shutil.rmtree(simDir)
 
 if __name__ == "__main__":
-  simulate('dataFolder',1,10,0,200,1000,42)
+  simulate('dataFolder',1,10,0,200,300,random.randint(0,100000))
