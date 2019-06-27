@@ -3,9 +3,11 @@ import os
 import shutil 
 import sys
 import glob
+import stat
 
 def simulate(targetLocation,k,beta,mu,N,endT,seed):
   simDir = os.path.join(os.getcwd(),'tmpFolder')
+  targetLocation = os.path.join(os.getcwd(),targetLocation)
 
   setupEnvironment(simDir)
   try:
@@ -33,7 +35,9 @@ def performSimulation(simDir,k,beta,mu,N,endT,seed):
 
   #subprocess.run(['sudo','chmod','+x','tmpFolder/defect.o'])
   #subprocess.run(['chmod','+x','tmpFolder/defectT.o'])
-  subprocess.run(['chmod','+x','defect.o'])
+  print('here')
+  os.chmod('defect.o',stat.S_IRWXO)
+  #subprocess.run(['chmod','+x','defect.o'])
   tmp = subprocess.run(['./defect.o',str(k),str(beta),str(mu),str(N),str(endT),str(seed)])
   subprocess.run(['python','imgGen.py'])
 
@@ -57,7 +61,8 @@ def moveFiles(simDir,targetLocation):
   os.chdir(tmp)
 
 def cleanupDirectory(simDir):
+  return
   shutil.rmtree(simDir)
 
 if __name__ == "__main__":
-  simulate('/home/stian/Desktop/testDir/',1,10,0,200,20000,42)
+  simulate('dataFolder',1,10,0,200,1000,42)
