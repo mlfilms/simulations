@@ -5,6 +5,7 @@ import sys
 import glob
 import stat
 import random
+import imp
 
 def simulate(targetLocation,k,beta,mu,N,endT,seed):
   simDir = os.path.join(os.getcwd(),'tmpFolder')
@@ -36,11 +37,17 @@ def performSimulation(simDir,k,beta,mu,N,endT,seed):
 
   #subprocess.run(['sudo','chmod','+x','tmpFolder/defect.o'])
   #subprocess.run(['chmod','+x','tmpFolder/defectT.o'])
-  print('here')
+  #print('here')
   os.chmod('defect.o',0o777)
   #subprocess.run(['chmod','+x','defect.o'])
   tmp = subprocess.run(['./defect.o',str(k),str(beta),str(mu),str(N),str(endT),str(seed)])
-  subprocess.run(['python','imgGen.py'])
+
+  #shutil.copyfile('imgGen.py',os.path.join(outDir,'imgGen.py'))
+  sys.path.append(simDir)
+  from imgGen import imgGenRand
+  imgGenRand(50,50)
+
+  #subprocess.run(['python','imgGen.py'])
 
   os.chdir(curDir)
 
