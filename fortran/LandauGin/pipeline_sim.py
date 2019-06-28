@@ -141,7 +141,7 @@ def runSim(cfg):
   imSize = cfg['simulation']['xDim']
   endT = cfg['simulation']['endT']
   #Parallel(n_jobs=-1, backend='loky',verbose=11)(delayed(jank)(i) for i in range(0,20))
-  Parallel(n_jobs=2, backend='loky',verbose=11)(delayed(simulate)('dataFolder',1,random.randint(tmin,tmax),0,imSize,endT,random.randint(0,1000000),cfg) for i in range(0,cfg['simulation']['numRuns']))
+  Parallel(n_jobs=-1, backend='loky',verbose=11)(delayed(simulate)('dataFolder',1,random.randint(tmin,tmax),0,imSize,endT,random.randint(0,1000000),cfg) for i in range(0,cfg['simulation']['numRuns']))
     #simulate('dataFolder',1,random.randint(tmin,tmax),0,imSize,endT,random.randint(0,100000),cfg)
 
   cleanupDirectory('tmpFolder')
