@@ -125,7 +125,10 @@ def cleanupDirectory(simDir):
 
 def runSim(cfg):
   if cfg['simulation']['erasePrevious'] and os.path.exists('dataFolder'):
-    shutil.rmtree('dataFolder')
+    try:
+      shutil.rmtree('dataFolder')
+    except:
+      shutil.rmtree('dataFolder')
     
   for i in range(0, cfg['simulation']['numRuns']):
     print('Run: '+str(i))

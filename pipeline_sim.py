@@ -27,7 +27,7 @@ def setupEnvironment(simDir):
   
   os.mkdir(simDir)
   #shutil.copyfile(os.path.join(sourceDir,'fortran','LandauGin','defectT.o'), os.path.join(simDir,'defectT.o'))
-  subprocess.run(['gfortran','-O3','-o',os.path.join(sourceDir,'fortran','LandauGin','defect.o'),os.path.join(sourceDir,'fortran','LandauGin','lg.f90')])
+  #subprocess.run(['gfortran','-O3','-o',os.path.join(sourceDir,'fortran','LandauGin','defect.o'),os.path.join(sourceDir,'fortran','LandauGin','lg.f90')])
   shutil.copyfile(os.path.join(sourceDir,'fortran','LandauGin','defect.o'), os.path.join(simDir,'defect.o'))
   shutil.copyfile(os.path.join(sourceDir,'fortran','LandauGin','imgGen.py'), os.path.join(simDir,'imgGen.py'))
 
