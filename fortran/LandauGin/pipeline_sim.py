@@ -20,7 +20,7 @@ def runSim(cfg):
     print("Generating xml files")
     sys.path.append(fileConvertPath)
     from fileConvertBatch import fileConvertBatch
-    fileConvertBatch(targetLocation,[200,200],'txt')
+    fileConvertBatch(targetLocation,[cfg['simulation']['xDim'],cfg['simulation']['xDim']],'txt')
 
   def simulate(targetLocation,k,beta,mu,N,endT,seed,cfg):
 
