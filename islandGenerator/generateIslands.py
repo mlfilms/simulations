@@ -30,7 +30,7 @@ def GenerateImageData(width, height, max_island, r_max=-1, noise_max=1):
     # Initialize data with some noise
     data = np.random.random((h, w)) * noise_max
     # Number of islands to generate
-    n_island = np.random.randint(max_island)
+    n_island = np.random.randint(1,max_island)
     # Saving coordinate data to compare with future islands: x, y, radius
     coords = np.zeros((n_island, 3))
     # Annotation data: xmin, ymin, xmax, ymax
@@ -96,7 +96,8 @@ def GenerateImages(config):
         fileConvert("annotations/island_{0:04d}.csv".format(i),
                     outDir=os.path.join(os.getcwd(), 'annotations'), delim=",",
                     headerLines=1, imageTag='.tif', imgSize=[800, 800])
-        im = Image.fromarray(data)
+        data = (data*255).astype('uint8')
+        im = Image.fromarray(data,mode='L')
         im.save("images/island_{0:04d}.tif".format(i))
         os.remove("annotations/island_{0:04d}.csv".format(i))
     print("Done!")
