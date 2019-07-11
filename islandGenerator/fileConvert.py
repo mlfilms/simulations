@@ -80,8 +80,8 @@ def fileConvert(filePath, outDir=None, delim = ' ', headerLines = 0, imageTag = 
             elif line.size == 4:
                 xmin.appendChild(doc.createTextNode(str(line[0])))
                 xmax.appendChild(doc.createTextNode(str(line[2])))
-                ymin.appendChild(doc.createTextNode(str(line[1]-1)))
-                ymax.appendChild(doc.createTextNode(str(line[3]+1)))
+                ymin.appendChild(doc.createTextNode(str(line[1])))
+                ymax.appendChild(doc.createTextNode(str(line[3])))
             else:
                 continue
             bndbox.appendChild(xmin)
@@ -116,7 +116,7 @@ def fileConvert(filePath, outDir=None, delim = ' ', headerLines = 0, imageTag = 
         difficult = doc.createElement('difficult')
         
         # Add text data to the elements
-        name.appendChild(doc.createTextNode('defect'))
+        name.appendChild(doc.createTextNode('class'))
         pose.appendChild(doc.createTextNode('center'))
         truncated.appendChild(doc.createTextNode('1'))
         difficult.appendChild(doc.createTextNode('0'))
@@ -135,8 +135,8 @@ def fileConvert(filePath, outDir=None, delim = ' ', headerLines = 0, imageTag = 
         elif line.size == 4:
             xmin.appendChild(doc.createTextNode(str(line[0])))
             xmax.appendChild(doc.createTextNode(str(line[2])))
-            ymin.appendChild(doc.createTextNode(str(line[1]-1)))
-            ymax.appendChild(doc.createTextNode(str(line[3]+1)))
+            ymin.appendChild(doc.createTextNode(str(line[1])))
+            ymax.appendChild(doc.createTextNode(str(line[3])))
         #else:
             #continue
         

@@ -1,4 +1,4 @@
-num_images: 10      # number of images to generate
+num_images: 1000      # number of images to generate
 width: 800          # width and height for image
 height: 800
 max_island: 20      # max number of islands

@@ -43,10 +43,10 @@ def GenerateImageData(width, height, max_island, r_max=-1, noise_max=1):
         # TODO Add random eccentricity to circles
         while(True):
             # random coords
-            X = np.random.randint(0, h)
-            Y = np.random.randint(0, w)
+            X = np.random.randint(0, w)
+            Y = np.random.randint(0, h)
             # random radius
-            R = np.random.random() * r_max
+            R = np.random.random() *(r_max-3)+3
             break_out = True
             # Check that we are not overlapping with previous islands
             for j in range(i):
@@ -62,15 +62,15 @@ def GenerateImageData(width, height, max_island, r_max=-1, noise_max=1):
                 break
 
         # Set annotation data
-        annotations[i, 0] = max(0, coords[i, 0] - np.ceil(coords[i, 2]))
-        annotations[i, 1] = max(0, coords[i, 1] - np.ceil(coords[i, 2]))
-        annotations[i, 2] = min(799, coords[i, 0] + np.ceil(coords[i, 2]))
-        annotations[i, 3] = min(799, coords[i, 1] + np.ceil(coords[i, 2]))
+        annotations[i, 0] = coords[i, 1] - np.ceil(coords[i, 2])
+        annotations[i, 1] = coords[i, 0] - np.ceil(coords[i, 2])
+        annotations[i, 2] = coords[i, 1] + np.ceil(coords[i, 2])
+        annotations[i, 3] = coords[i, 0] + np.ceil(coords[i, 2])
 
         # Update image data
         xx, yy = np.mgrid[:h, :w]
         circle = (xx - coords[i, 0]) ** 2 + (yy - coords[i, 1]) ** 2
-        data[circle < coords[i, 2]**2] = np.random.random()
+        data[circle < coords[i, 2]**2] = data[circle < coords[i, 2]**2]+np.random.random()*0.3
 
     return data, annotations
 
@@ -95,7 +95,7 @@ def GenerateImages(config):
                    header=str(annotations.shape[0]), comments='')
         fileConvert("annotations/island_{0:04d}.csv".format(i),
                     outDir=os.path.join(os.getcwd(), 'annotations'), delim=",",
-                    headerLines=1, imageTag='.tif', imgSize=[800, 800])
+                    headerLines=1, imageTag='.tif', imgSize=[w, h])
         data = (data*255).astype('uint8')
         im = Image.fromarray(data,mode='L')
         im.save("images/island_{0:04d}.tif".format(i))
